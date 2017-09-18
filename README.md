@@ -7,7 +7,7 @@ Basically it translates the weird GET requests to POST requests.
 
 ## Setting up Home Assistant
 
-Create two binary sensors within Home Assistant, eg.:
+Create three binary sensors within Home Assistant, eg.:
 
 ```yaml
 binary_sensor:
