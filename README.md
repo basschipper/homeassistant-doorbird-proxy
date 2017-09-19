@@ -7,7 +7,7 @@ Basically it translates the weird GET requests to POST requests.
 
 ## Setting up Home Assistant
 
-Create two binary sensors within Home Assistant, eg.:
+Create three binary sensors within Home Assistant, eg.:
 
 ```yaml
 binary_sensor:
@@ -23,6 +23,11 @@ binary_sensor:
         device_class: motion
         value_template: 'off'
         entity_id: foo.bar
+      frontdoor_open:
+        friendly_name: Front Door Open
+        device_class: opening
+        value_template: 'off'
+        entity_id: foo.bar
 ```
 
 ## Run the proxy
@@ -35,6 +40,7 @@ docker run -d -p 5123:80 \
   -e HA_API_URL=http://${homeassistant.url}:8123/api \
   -e HA_DOORBELL_ENTITY=binary_sensor.doorbell \
   -e HA_FRONTDOORMOTION_ENTITY=binary_sensor.frontdoor_motion \
+  -e HA_FRONTDOOROPEN_ENTITY=binary_sensor.frontdoor_open \
   basschipper/homeassistant-doorbird-proxy:latest
 ```
 
@@ -51,9 +57,12 @@ Configure the motionsensor event:
 ```bash
 curl -k 'https://${doorbird.url}/bha-api/notification.cgi?url=http%3A%2F%2F${homeassistant.url}%3A5123%2Ffrontdoormotion&event=motionsensor&subscribe=1&http-user=${doorbird.user}&http-password=${doorbird.password}'
 ```
-
+Configure the dooropen event:
+```bash
+curl -k 'https://${doorbird.url}/bha-api/notification.cgi?url=http%3A%2F%2F${homeassistant.url}%3A5123%2Ffrontdooropen&event=dooropen&subscribe=1&http-user=${doorbird.user}&http-password=${doorbird.password}'
+```
 ##### Where:
-- ${homeassistant.url} = your Home Assistant URL or IP
+- ${homeassistant.url} = your Home Assistant URL or IP (if running the proxy on another box, use that ip for the curl entrys instead)
 - ${doorbird.url} = your DoorBird URL or IP
 - ${doorbird.user} = your DoorBird Username
 - ${doorbird.password} = your DoorBird Password
