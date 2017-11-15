@@ -38,6 +38,7 @@ But, running it without Docker should also work.
 ```bash
 docker run -d -p 5123:80 \
   -e HA_API_URL=http://${homeassistant.url}:8123/api \
+  -e HA_API_PASSWORD=Secret123 \
   -e HA_DOORBELL_ENTITY=binary_sensor.doorbell \
   -e HA_FRONTDOORMOTION_ENTITY=binary_sensor.frontdoor_motion \
   -e HA_FRONTDOOROPEN_ENTITY=binary_sensor.frontdoor_open \
