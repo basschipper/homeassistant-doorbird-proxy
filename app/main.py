@@ -7,7 +7,7 @@ from flask import Flask
 app = Flask(__name__)
 
 ha_api_url = os.getenv('HA_API_URL', 'http://localhost:8123/api')
-ha_api_password = os.getenv('HA_API_PASSWORD', None)
+ha_access_token = os.getenv('HA_ACCESS_TOKEN', None)
 ha_doorbell_entity = os.getenv('HA_DOORBELL_ENTITY', 'binary_sensor.doorbell')
 ha_frontdoormotion_entity = os.getenv('HA_FRONTDOORMOTION_ENTITY', 'binary_sensor.frontdoor_motion')
 ha_frontdooropen_entity = os.getenv('HA_FRONTDOOROPEN_ENTITY', 'binary_sensor.frontdoor_open')
@@ -34,7 +34,7 @@ def frontdooropen():
 
 
 def trigger_ha_entity(name):
-    client = HomeAssistantApiClient(ha_api_url, ha_api_password)
+    client = HomeAssistantApiClient(ha_api_url, ha_access_token)
 
     try:
         entity = client.get_entity(name)
@@ -59,11 +59,11 @@ def trigger_ha_entity(name):
 
 
 class HomeAssistantApiClient(object):
-    def __init__(self, base_url, api_password=None):
+    def __init__(self, base_url, access_token=None):
         self.base_url = base_url
         self.headers = {'content-type': 'application/json'}
-        if api_password is not None:
-            self.headers.update({'X-HA-Access': api_password})
+        if access_token is not None:
+            self.headers.update({'Authorization': 'Bearer {0}'.format(access_token)})
 
     def get_entity(self, name):
         url = '{}/states/{}'.format(self.base_url, name)
